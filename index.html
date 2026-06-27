@@ -42,7 +42,28 @@
             a.header-link:hover {
               color: #76938F;
             }
-            
+
+
+
+            html {
+  font-size: 18px; /* desktop baseline */
+}
+
+@media (max-width: 600px) {
+  html {
+    font-size: 20px; /* larger on phones */
+  }
+}
+
+body {
+  line-height: 1.6;
+  padding: 1rem;
+}
+
+            .main {
+  max-width: 700px;
+  margin: 0 auto;
+}
 
 </style>
 
@@ -54,9 +75,13 @@
         
         <link href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Geist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     </head>
 
     <body>
+        <div class="main">
 <br>
         <table cellpadding="20" cellspacing="0" align="center" style="width: 90%; max-width: 700px; background-color: #EDEDE9; border-right: 1px solid black; border-bottom: 2px solid black; border-top: 1px solid black; border-left: 1px solid black;">
 
@@ -127,7 +152,7 @@ font-size: 20px;
 
         </table>
 <br>
-
+        </div>
     </body>
 
     </html>
