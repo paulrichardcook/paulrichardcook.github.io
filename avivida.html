@@ -75,36 +75,29 @@ h2 {
   color: #FFFFFF;
 }
 
+  .search-box {
+    display: flex;
+    align-items: center;
+    background: #FFFFFF;
+    border-radius: 0.3rem;
+    padding: 0.4rem 0.6rem;
+    width: 250px;
+  }
 
-  .dropdown {
-    position: relative;
-}
+  .search-box input {
+    border: none;
+    outline: none;
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    font-size: 1.0rem;
+    flex: 1;
+  }
 
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: white;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-    z-index: 1;
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
-.dropdown-content a:hover {
-    background-color: #f1f1f1;
-}
-
-/* Show dropdown on hover */
-.dropdown:hover .dropdown-content {
-    display: block;
-}
+  .search-icon {
+    font-size: 1.2rem;
+    color: #888888; /* gray icon */
+    margin-right: 0.4rem;
+  }
 
 
 </style>
@@ -133,14 +126,10 @@ Our goal is to share our love of nature and provide a spotlight on the need for 
 
 <p class="small-body">Have you ever wondered about the names of birds in other languages?</p>
 
-      <div class="dropdown">
-        <a href="#">Select a bird....</a>
-        <div class="dropdown-content">
-            <a href="#">American Flamingo</a>
-            <a href="#">Short-eared Owl</a>
-            <a href="#">Carolina Wren</a>
-        </div>
-    </div>
+     <div class="search-box">
+  <span class="search-icon">🔍</span>
+  <input type="text" placeholder="Search a species...">
+</div>
 
 
 <p class="small-button">Button text</p></td>
