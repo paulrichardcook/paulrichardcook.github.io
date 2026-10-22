@@ -1,9 +1,19 @@
+:root {
+  --page-background-start: #270e56;
+  --page-background-end: #685689;
+  --text-primary: #ffffff;
+  --heading-primary: #eaf6ad;
+  --control-background: #a69cb9;
+  --control-border: #a69cb9;
+  --input-background: #ffffff;
+}
+
 body {
-  background: linear-gradient(100deg, #270e56, #685689);
+  background: linear-gradient(100deg, var(--page-background-start), var(--page-background-end));
   font-family: "Roboto", sans-serif;
   font-weight: 300;
   font-size: 1rem;
-  color: #ffffff;
+  color: var(--text-primary);
   min-height: 100vh;
   background-attachment: fixed;
 }
@@ -12,14 +22,14 @@ h1 {
   font-family: "Roboto", sans-serif;
   font-weight: 200;
   font-size: 3rem;
-  color: #eaf6ad;
+  color: var(--heading-primary);
 }
 
 h2 {
   font-family: "SN Pro", sans-serif;
   font-weight: 600;
   font-size: 1.5rem;
-  color: #eaf6ad;
+  color: var(--heading-primary);
   margin-bottom: 0;
 }
 
@@ -27,16 +37,16 @@ h2 {
   font-family: "Roboto", sans-serif;
   font-weight: 300;
   font-size: 0.6rem;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .language-box a {
-  color: #eaf6ad;
+  color: var(--heading-primary);
   text-decoration: underline;
 }
 
 .language-box a:hover {
-  color: #ffffff;
+  color: var(--text-primary);
   text-decoration: none;
 }
 
@@ -44,56 +54,56 @@ h2 {
   font-family: "SN Pro", sans-serif;
   font-weight: 500;
   font-size: 1rem;
-  color: #ffffff;
+  color: var(--text-primary);
   text-align: center;
   text-decoration: none;
   padding: 0.4rem 1rem;
   border-radius: 0;
   cursor: pointer;
   display: inline-block;
-  background-color: #a69cb9;
+  background-color: var(--control-background);
 }
 
 .action-button:hover {
-  background-color: #270e56;
+  background-color: var(--page-background-start);
 }
 
 .selection {
   font-family: "SN Pro", sans-serif;
   font-weight: 500;
   font-size: 1rem;
-  color: #ffffff;
+  color: var(--text-primary);
   text-align: center;
   text-decoration: none;
   padding: 0.4rem 1rem;
   border-radius: 0;
-  border: 1px solid #a69cb9;
+  border: 1px solid var(--control-border);
   cursor: pointer;
   display: inline-block;
 }
 
 .selection:hover {
-  background-color: #a69cb9;
+  background-color: var(--control-background);
 }
 
 .language-box {
   width: 250px;
-  border: 1px solid #a69cb9;
+  border: 1px solid var(--control-border);
   padding: 0.4rem 0.6rem;
   font-family: "Roboto", sans-serif;
   font-weight: 300;
   font-size: 1rem;
   line-height: 1.6;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .search-box {
   display: flex;
   align-items: center;
-  background: #ffffff;
+  background: var(--input-background);
   padding: 0.4rem 0.6rem;
   width: 250px;
-  border: 1px solid #ffffff;
+  border: 1px solid var(--input-background);
   font-family: "Roboto", sans-serif;
   font-weight: 300;
   font-size: 0.75rem;
@@ -115,17 +125,17 @@ h2 {
   height: 120px;
   border-radius: 12px;
   display: inline-block;
-  border: 4px solid #ffffff;
+  border: 4px solid var(--text-primary);
 }
 
 .rounded-merch {
   height: 120px;
   border-radius: 12px;
   display: inline-block;
-  border: 4px solid #ffffff;
+  border: 4px solid var(--text-primary);
 }
 
 hr {
   border-top: 1px;
-  border-color: #685689;
+  border-color: var(--page-background-end);
 }
