@@ -33,9 +33,12 @@
               <input
                 id="species-search"
                 type="text"
+                list="species-suggestions"
+                autocomplete="off"
                 placeholder="Search a species..."
               />
             </div>
+            <datalist id="species-suggestions"></datalist>
             &nbsp;
             <button type="button" class="action-button" id="search-button">
               Search &gt;
@@ -51,7 +54,29 @@
       const searchInput = document.getElementById("species-search");
       const searchButton = document.getElementById("search-button");
       const searchResults = document.getElementById("search-results");
+      const suggestionsList = document.getElementById("species-suggestions");
       let speciesDatabase = [];
+
+      function updateSuggestions() {
+        const query = searchInput.value.trim();
+
+        if (query.length < 4) {
+          suggestionsList.innerHTML = "";
+          return;
+        }
+
+        const matches = speciesDatabase
+          .filter((species) =>
+            Object.values(species).some((value) =>
+              String(value).toLowerCase().includes(query.toLowerCase())
+            )
+          )
+          .slice(0, 8);
+
+        suggestionsList.innerHTML = matches
+          .map((species) => `<option value="${species.Scientific}"></option>`)
+          .join("");
+      }
 
       function renderSpecies(species) {
         if (!species) {
@@ -73,14 +98,14 @@
             flag: "../assets/img/flag-uk.svg"
           },
           {
+            label: "French / Français",
+            value: species.French,
+            flag: "../assets/img/flag-france.svg"
+          },
+          {
             label: "Spanish / Español",
             value: species.Spanish,
             flag: "../assets/img/flag-spain.svg"
-          },
-          {
-            label: "Norwegian / Norsk",
-            value: species.Norwegian,
-            flag: "../assets/img/flag-norway.svg"
           },
           {
             label: "German / Deutsch",
@@ -88,9 +113,9 @@
             flag: "../assets/img/flag-germany.svg"
           },
           {
-            label: "French / Français",
-            value: species.French,
-            flag: "../assets/img/flag-france.svg"
+            label: "Norwegian / Norsk",
+            value: species.Norwegian,
+            flag: "../assets/img/flag-norway.svg"
           }
         ];
 
@@ -181,6 +206,7 @@
         });
 
       searchButton.addEventListener("click", updateSearchResults);
+      searchInput.addEventListener("input", updateSuggestions);
       searchInput.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
           updateSearchResults();
