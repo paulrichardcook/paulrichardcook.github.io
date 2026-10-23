@@ -186,11 +186,17 @@
         suggestionDropdown.innerHTML = matches
           .map((item) => {
             const match = getBestMatch(item.species, item.query);
+            const englishName = item.species["English_ AviList"] || "";
+            const englishMatch = englishName ? renderHighlightedMatch(englishName, item.query) : "";
             const matchedValue = match ? renderHighlightedMatch(match.value, item.query) : item.species.Scientific;
 
             return `
               <button type="button" class="suggestion-item" data-scientific="${item.species.Scientific}">
                 <span class="suggestion-main">${item.species.Scientific}</span>
+                <span class="suggestion-secondary">
+                  <span class="suggestion-field">English:</span>
+                  ${englishMatch || englishName || "—"}
+                </span>
                 <span class="suggestion-secondary">
                   <span class="suggestion-field">${match ? match.label : "Match"}:</span>
                   ${matchedValue}
