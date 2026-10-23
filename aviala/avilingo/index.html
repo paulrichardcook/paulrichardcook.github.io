@@ -104,12 +104,12 @@
 
       function scoreSpecies(species, query) {
         const fields = [
-          { value: species.Scientific, weight: 6 },
-          { value: species["English_ AviList"], weight: 4 },
+          { value: species.Scientific, weight: 5 },
+          { value: species["English_ AviList"], weight: 7 },
           { value: species.French, weight: 3 },
           { value: species.Spanish, weight: 3 },
           { value: species.German, weight: 3 },
-          { value: species.Norwegian, weight: 3 }
+          { value: species.Norwegian, weight: 7 }
         ];
 
         let total = 0;
