@@ -198,12 +198,12 @@
 
       function scoreSpecies(species, query) {
         const fields = [
-          { value: species.Scientific, weight: 5 },
-          { value: species["English_ AviList"], weight: 7 },
+          { value: species["English_ AviList"], weight: 9 },
+          { value: species.Norwegian, weight: 8 },
+          { value: species.Scientific, weight: 6 },
           { value: species.French, weight: 3 },
           { value: species.Spanish, weight: 3 },
-          { value: species.German, weight: 3 },
-          { value: species.Norwegian, weight: 7 }
+          { value: species.German, weight: 3 }
         ];
 
         let total = 0;
@@ -241,12 +241,12 @@
 
       function getBestMatch(species, query) {
         const fields = [
-          { label: "Scientific", value: species.Scientific, weight: 5 },
-          { label: "English", value: species["English_ AviList"], weight: 7 },
+          { label: "English", value: species["English_ AviList"], weight: 9 },
+          { label: "Norwegian", value: species.Norwegian, weight: 8 },
+          { label: "Scientific", value: species.Scientific, weight: 6 },
           { label: "French", value: species.French, weight: 3 },
           { label: "Spanish", value: species.Spanish, weight: 3 },
-          { label: "German", value: species.German, weight: 3 },
-          { label: "Norwegian", value: species.Norwegian, weight: 7 }
+          { label: "German", value: species.German, weight: 3 }
         ];
 
         let best = null;
