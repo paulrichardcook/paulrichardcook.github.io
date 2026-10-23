@@ -37,6 +37,14 @@
                   autocomplete="off"
                   placeholder="Search a species..."
                 />
+                <button
+                  type="button"
+                  id="clear-search"
+                  class="clear-search hidden"
+                  aria-label="Clear search"
+                >
+                  ×
+                </button>
               </div>
               <div id="suggestion-dropdown" class="suggestion-dropdown hidden"></div>
             </div>
@@ -54,9 +62,15 @@
     <script>
       const searchInput = document.getElementById("species-search");
       const searchButton = document.getElementById("search-button");
+      const clearSearchButton = document.getElementById("clear-search");
       const searchResults = document.getElementById("search-results");
       const suggestionDropdown = document.getElementById("suggestion-dropdown");
       let speciesDatabase = [];
+
+      function updateClearButton() {
+        const hasValue = searchInput.value.trim().length > 0;
+        clearSearchButton.classList.toggle("hidden", !hasValue);
+      }
 
       function normalizeText(value) {
         return String(value)
@@ -288,13 +302,23 @@
         });
 
       searchButton.addEventListener("click", updateSearchResults);
-      searchInput.addEventListener("input", updateSuggestions);
+      searchInput.addEventListener("input", () => {
+        updateSuggestions();
+        updateClearButton();
+      });
       searchInput.addEventListener("focus", updateSuggestions);
       searchInput.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
           hideSuggestions();
           updateSearchResults();
         }
+      });
+
+      clearSearchButton.addEventListener("click", () => {
+        searchInput.value = "";
+        updateClearButton();
+        hideSuggestions();
+        searchInput.focus();
       });
 
       document.addEventListener("click", (event) => {

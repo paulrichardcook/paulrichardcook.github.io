@@ -51,21 +51,23 @@ h2 {
 }
 
 .action-button {
-   font-family: "SN Pro", sans-serif;
-   font-weight: 500;
-   font-size: 1rem;
-   color: var(--text-primary);
-   text-align: center;
-   text-decoration: none;
-   padding: 0.4rem 1rem;
-   border: 1px solid var(--control-border);
-   border-radius: 0;
-   cursor: pointer;
-   display: inline-block;
-   background-color: var(--control-background);
-   appearance: none;
-   -webkit-appearance: none;
-   line-height: normal;
+    font-family: "SN Pro", sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--text-primary);
+    text-align: center;
+    text-decoration: none;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--control-border);
+    border-radius: 0;
+    cursor: pointer;
+    display: inline-block;
+    background-color: var(--control-background);
+    appearance: none;
+    -webkit-appearance: none;
+    line-height: normal;
+    height: 2.2rem;
+    box-sizing: border-box;
 }
 
 .action-button:hover {
@@ -110,8 +112,9 @@ h2 {
     display: flex;
     align-items: center;
     background: var(--input-background);
-    padding: 0.4rem 0.6rem;
+    padding: 0.2rem 0.35rem 0.2rem 0.6rem;
     width: 250px;
+    height: 2.2rem;
     border: 1px solid var(--control-border);
     font-family: "Roboto", sans-serif;
     font-weight: 300;
@@ -129,10 +132,28 @@ h2 {
     font-family: "Roboto", sans-serif;
     font-weight: 300;
     font-size: 0.75rem;
+    min-width: 0;
+    height: 100%;
 }
 
 .search-box input::placeholder {
     color: #6b6b6b;
+}
+
+.clear-search {
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    color: var(--page-background-start);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 0.25rem;
+    height: 100%;
+}
+
+.clear-search.hidden {
+    display: none;
 }
 
 .suggestion-dropdown {
@@ -214,8 +235,8 @@ h2 {
 }
 
 #search-results .species-link-box {
-    width: 100%;
-    max-width: 520px;
+    width: 250px;
+    max-width: 250px;
 }
 
 #search-results .search-status {
