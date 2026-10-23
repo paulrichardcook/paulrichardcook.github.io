@@ -30,56 +30,133 @@
 
           <div class="container">
             <div class="search-box">
-              <input type="text" placeholder="Search a species..." />
+              <input
+                id="species-search"
+                type="text"
+                placeholder="Search a species..."
+              />
             </div>
             &nbsp;
-            <div class="action-button">Search &gt;</div>
+            <button type="button" class="action-button" id="search-button">
+              Search &gt;
+            </button>
           </div>
 
+          <div id="search-results"></div>
+        </td>
+      </tr>
+    </table>
+
+    <script>
+      const searchInput = document.getElementById("species-search");
+      const searchButton = document.getElementById("search-button");
+      const searchResults = document.getElementById("search-results");
+      let speciesDatabase = [];
+
+      function renderSpecies(species) {
+        if (!species) {
+          searchResults.innerHTML =
+            '<p class="language-box search-status">No matching species found.</p>';
+          return;
+        }
+
+        const nameFields = [
+          { label: "Scientific/Latin", value: species.Scientific, italic: true },
+          { label: "English / English (AviList)", value: species["English_ AviList"] },
+          { label: "Spanish / Español", value: species.Spanish },
+          { label: "Norwegian / Norsk", value: species.Norwegian },
+          { label: "German / Deutsch", value: species.German },
+          { label: "French / Français", value: species.French }
+        ];
+
+        const info = nameFields
+          .filter((field) => field.value)
+          .map((field) => {
+            const valueHtml = field.italic ? `<i>${field.value}</i>` : field.value;
+            return `
+              <p class="language-box">
+                <strong>${field.label}</strong>
+                <br />
+                ${valueHtml}
+              </p>
+            `;
+          })
+          .join("");
+
+        searchResults.innerHTML = `
           <div>
             <p class="language-box">
               Read more about this species at
               <strong>
-                <a
-                  href="https://birdsoftheworld.org/bow/species/grefla3"
-                  target="_blank"
-                  >Birds of the World</a
-                >
+                <a href="https://birdsoftheworld.org/bow/species/grefla3" target="_blank">Birds of the World</a>
               </strong>
             </p>
-
-            <p class="language-box">
-              <strong>Scientific/Latin</strong>
-              <br />
-              <i>Phoenicopterus roseus</i>
-            </p>
-
-            <p class="language-box">
-              <img src="../assets/img/flag-uk.svg" style="width: 20px;" />
-              &nbsp;&nbsp;
-              <strong>English-UK</strong>
-              <br />
-              Greater Flamingo
-            </p>
-
-            <p class="language-box">
-              <img src="../assets/img/flag-norway.svg" style="width: 20px;" />
-              &nbsp;&nbsp;
-              <strong>Norwegian / Norsk</strong>
-              <br />
-              rosenflamingo
-            </p>
-
-            <p class="language-box">
-              <img src="../assets/img/flag-sweden.svg" style="width: 20px;" />
-              &nbsp;&nbsp;
-              <strong>Swedish / Svenska</strong>
-              <br />
-              större flamingo
-            </p>
+            ${info}
           </div>
-        </td>
-      </tr>
-    </table>
+        `;
+      }
+
+      function findMatches(query) {
+        const normalizedQuery = query.trim().toLowerCase();
+
+        if (!normalizedQuery) {
+          return speciesDatabase.filter((species) => species.Scientific === "Phoenicopterus roseus");
+        }
+
+        return speciesDatabase.filter((species) =>
+          Object.values(species).some((value) =>
+            String(value).toLowerCase().includes(normalizedQuery)
+          )
+        );
+      }
+
+      function updateSearchResults() {
+        const matches = findMatches(searchInput.value);
+        renderSpecies(matches[0] || null);
+
+        if (matches.length > 1) {
+          const links = matches
+            .slice(0, 5)
+            .map(
+              (species) =>
+                `<span class="search-result-link" data-scientific="${species.Scientific}">${species.Scientific}</span>`
+            )
+            .join(" &nbsp; ");
+
+          searchResults.insertAdjacentHTML(
+            "beforeend",
+            `<p class="search-status">Showing ${matches.length} match${matches.length > 1 ? "es" : ""}. ${links}</p>`
+          );
+
+          searchResults.querySelectorAll(".search-result-link").forEach((link) => {
+            link.addEventListener("click", () => {
+              const selected = speciesDatabase.find(
+                (species) => species.Scientific === link.dataset.scientific
+              );
+              searchInput.value = selected?.Scientific || "";
+              renderSpecies(selected);
+            });
+          });
+        }
+      }
+
+      fetch("species.json")
+        .then((response) => response.json())
+        .then((data) => {
+          speciesDatabase = data;
+          updateSearchResults();
+        })
+        .catch(() => {
+          searchResults.innerHTML =
+            '<p class="language-box search-status">Unable to load bird species data.</p>';
+        });
+
+      searchButton.addEventListener("click", updateSearchResults);
+      searchInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          updateSearchResults();
+        }
+      });
+    </script>
   </body>
 </html>

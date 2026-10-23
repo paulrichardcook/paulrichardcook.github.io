@@ -117,7 +117,24 @@ h2 {
 }
 
 .container {
-  display: flex;
+   display: flex;
+}
+
+#search-results {
+   margin-top: 1rem;
+}
+
+#search-results .search-status {
+   margin-top: 0.5rem;
+   font-family: "Roboto", sans-serif;
+   font-weight: 300;
+   color: var(--text-primary);
+}
+
+#search-results .search-result-link {
+   color: var(--heading-primary);
+   cursor: pointer;
+   text-decoration: underline;
 }
 
 .rounded-thumbnail {
