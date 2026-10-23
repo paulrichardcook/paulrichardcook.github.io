@@ -53,59 +53,6 @@
         <td>
           <hr />
 
-          <div class="featured-projects">
-            <h2>Featured projects</h2>
-
-            <div class="project-carousel" aria-live="polite">
-              <button type="button" class="carousel-arrow prev" aria-label="Previous project">&#8249;</button>
-
-              <div class="carousel-track">
-                <article class="project-slide active">
-                  <img src="assets/img/flight-patterns.png" alt="Flight Patterns DB" />
-                  <div class="project-copy">
-                    <h3>Flight Patterns DB</h3>
-                    <p>
-                      Bird ID descriptors, behaviour, range data, and field insights in one searchable database.
-                    </p>
-                    <a class="selection" href="/aviala/flight-patterns/">Explore &gt;</a>
-                  </div>
-                </article>
-
-                <article class="project-slide">
-                  <img src="assets/img/bird1.jpg" alt="Avilingo translator" />
-                  <div class="project-copy">
-                    <h3>Avilingo Translator</h3>
-                    <p>
-                      Search bird names across scientific, English, French, Spanish, German, and Norwegian data.
-                    </p>
-                    <a class="selection" href="/aviala/avilingo/">Open Avilingo &gt;</a>
-                  </div>
-                </article>
-
-                <article class="project-slide">
-                  <img src="assets/img/t-shirt.png" alt="Modern Dinosaur shop" />
-                  <div class="project-copy">
-                    <h3>Modern Dinosaur</h3>
-                    <p>
-                      Bird-inspired art and apparel with proceeds supporting conservation work across Norway.
-                    </p>
-                    <a class="selection" href="/aviala/modern-dinosaur/">Visit shop &gt;</a>
-                  </div>
-                </article>
-              </div>
-
-              <button type="button" class="carousel-arrow next" aria-label="Next project">&#8250;</button>
-            </div>
-
-            <div class="carousel-dots" aria-label="Project navigation">
-              <button type="button" class="dot active" aria-label="Show project 1"></button>
-              <button type="button" class="dot" aria-label="Show project 2"></button>
-              <button type="button" class="dot" aria-label="Show project 3"></button>
-            </div>
-          </div>
-
-          <hr />
-
           <h2>Founders</h2>
 
             <p>Ninni Victoria and Paul Richard met in 2024 and bonded instantly over a love of books and birds.  
@@ -138,35 +85,4 @@
       </tr>
     </table>
 
-    <script>
-      const slides = Array.from(document.querySelectorAll(".project-slide"));
-      const dots = Array.from(document.querySelectorAll(".dot"));
-      const prevButton = document.querySelector(".carousel-arrow.prev");
-      const nextButton = document.querySelector(".carousel-arrow.next");
-
-      if (slides.length && dots.length && prevButton && nextButton) {
-        let currentSlide = 0;
-
-        function showSlide(index) {
-          currentSlide = (index + slides.length) % slides.length;
-
-          slides.forEach((slide, slideIndex) => {
-            slide.classList.toggle("active", slideIndex === currentSlide);
-          });
-
-          dots.forEach((dot, dotIndex) => {
-            dot.classList.toggle("active", dotIndex === currentSlide);
-          });
-        }
-
-        prevButton.addEventListener("click", () => showSlide(currentSlide - 1));
-        nextButton.addEventListener("click", () => showSlide(currentSlide + 1));
-        dots.forEach((dot, index) => {
-          dot.addEventListener("click", () => showSlide(index));
-        });
-
-        setInterval(() => showSlide(currentSlide + 1), 6000);
-      }
-    </script>
-  </body>
 </html>
