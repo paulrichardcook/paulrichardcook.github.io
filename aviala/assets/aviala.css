@@ -367,7 +367,7 @@ h2 {
 
     .aviala-home-table td:first-child img,
     .aviala-home-logo {
-       max-width: 220px !important;
+       max-width: 160px !important;
        width: 100% !important;
        height: auto !important;
        min-height: 0 !important;
@@ -376,7 +376,7 @@ h2 {
 
     .aviala-home-table td:first-child {
        width: 100% !important;
-       max-width: 220px !important;
+       max-width: 160px !important;
        padding-right: 0 !important;
        margin: 0 auto;
     }

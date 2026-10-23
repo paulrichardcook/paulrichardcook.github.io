@@ -113,12 +113,13 @@
         ];
 
         let total = 0;
+        const normalizedQuery = normalizeText(query);
+        const queryTokens = normalizedQuery.split(/\s+/).filter(Boolean);
 
         fields.forEach(({ value, weight }) => {
           if (!value) return;
 
           const normalizedValue = normalizeText(value);
-          const normalizedQuery = normalizeText(query);
           if (!normalizedValue || !normalizedQuery) return;
 
           if (normalizedValue === normalizedQuery) {
@@ -136,11 +137,13 @@
             return;
           }
 
-          const queryTokens = normalizedQuery.split(/\s+/).filter(Boolean);
           if (queryTokens.length > 1) {
             const matchedTokens = queryTokens.filter((token) => normalizedValue.includes(token)).length;
             if (matchedTokens > 0) {
-              total += (matchedTokens / queryTokens.length) * 40 * weight;
+              total += (matchedTokens / queryTokens.length) * 55 * weight;
+              if (matchedTokens === queryTokens.length) {
+                total += 20 * weight;
+              }
             }
           }
         });
