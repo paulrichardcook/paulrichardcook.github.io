@@ -130,22 +130,22 @@
         const normalizedQuery = normalizeText(query);
 
         if (!normalizedValue || !normalizedQuery) {
-          return { base: 0, tokenCoverage: 0, orderedMatch: false, reverseOrderedMatch: false, phraseMatch: false, allTokensPresent: false };
+          return { base: 0, tokenCoverage: 0, orderedMatch: false, reverseOrderedMatch: false, phraseMatch: false, allTokensPresent: false, fullWordMatch: false };
         }
 
         if (normalizedValue === normalizedQuery) {
-          return { base: 100, tokenCoverage: 1, orderedMatch: true, reverseOrderedMatch: true, phraseMatch: true, allTokensPresent: true };
+          return { base: 100, tokenCoverage: 1, orderedMatch: true, reverseOrderedMatch: true, phraseMatch: true, allTokensPresent: true, fullWordMatch: true };
         }
 
         if (normalizedValue.startsWith(normalizedQuery)) {
-          return { base: 80, tokenCoverage: 1, orderedMatch: true, reverseOrderedMatch: true, phraseMatch: true, allTokensPresent: true };
+          return { base: 80, tokenCoverage: 1, orderedMatch: true, reverseOrderedMatch: true, phraseMatch: true, allTokensPresent: true, fullWordMatch: true };
         }
 
         const queryTokens = normalizedQuery.split(/\s+/).filter(Boolean);
-        const tokenCoverage = queryTokens.length
-          ? queryTokens.filter((token) => normalizedValue.includes(token)).length / queryTokens.length
-          : 0;
-        const allTokensPresent = queryTokens.length > 0 && tokenCoverage === 1;
+        const matchedTokens = queryTokens.filter((token) => normalizedValue.includes(token));
+        const tokenCoverage = queryTokens.length ? matchedTokens.length / queryTokens.length : 0;
+        const allTokensPresent = queryTokens.length > 0 && matchedTokens.length === queryTokens.length;
+        const fullWordMatch = queryTokens.length > 1 && allTokensPresent;
 
         let orderedMatch = false;
         let reverseOrderedMatch = false;
@@ -169,17 +169,21 @@
         }
 
         const phraseMatch = normalizedValue.includes(normalizedQuery);
-        const base = phraseMatch
-          ? 70
-          : orderedMatch
-            ? 65
-            : reverseOrderedMatch
-              ? 60
-              : allTokensPresent
-                ? 55
-                : tokenCoverage > 0
-                  ? 30
-                  : 0;
+
+        let base = 0;
+        if (fullWordMatch) {
+          base = 90;
+        } else if (phraseMatch) {
+          base = 70;
+        } else if (orderedMatch) {
+          base = 65;
+        } else if (reverseOrderedMatch) {
+          base = 60;
+        } else if (allTokensPresent) {
+          base = 55;
+        } else if (tokenCoverage > 0) {
+          base = 30;
+        }
 
         return {
           base,
@@ -187,7 +191,8 @@
           orderedMatch,
           reverseOrderedMatch,
           phraseMatch,
-          allTokensPresent
+          allTokensPresent,
+          fullWordMatch
         };
       }
 
@@ -212,8 +217,12 @@
 
           let fieldScore = match.base * weight;
 
+          if (match.fullWordMatch) {
+            fieldScore += 30 * weight;
+          }
+
           if (match.tokenCoverage > 0) {
-            fieldScore += match.tokenCoverage * 25 * weight;
+            fieldScore += match.tokenCoverage * 20 * weight;
           }
 
           if (match.phraseMatch) {
