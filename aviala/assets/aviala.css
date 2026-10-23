@@ -8,14 +8,20 @@
   --input-background: #ffffff;
 }
 
+* {
+   box-sizing: border-box;
+}
+
 body {
-  background: linear-gradient(100deg, var(--page-background-start), var(--page-background-end));
-  font-family: "Roboto", sans-serif;
-  font-weight: 300;
-  font-size: 1rem;
-  color: var(--text-primary);
-  min-height: 100vh;
-  background-attachment: fixed;
+   background: linear-gradient(100deg, var(--page-background-start), var(--page-background-end));
+   font-family: "Roboto", sans-serif;
+   font-weight: 300;
+   font-size: 1rem;
+   color: var(--text-primary);
+   min-height: 100vh;
+   background-attachment: fixed;
+   margin: 0;
+   overflow-x: hidden;
 }
 
 h1 {
@@ -89,18 +95,23 @@ h2 {
 }
 
 .site-header-nav {
-   display: flex;
-   justify-content: flex-end;
-   align-items: center;
-   gap: 0.4rem;
-   padding: 0.75rem 1rem 0;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.75rem 1rem 0;
+    box-sizing: border-box;
 }
 
 .nav-menu {
-   display: flex;
-   flex-wrap: wrap;
-   justify-content: flex-end;
-   gap: 0.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    margin-left: auto;
 }
 
 .menu-toggle {
@@ -293,40 +304,46 @@ h2 {
 }
 
 @media (max-width: 768px) {
-   body {
-      margin: 0;
-      padding: 0;
-   }
+    body {
+       margin: 0;
+       padding: 0;
+    }
 
-   .site-header-nav {
-      display: block;
-      padding: 0.75rem 0.75rem 0;
-   }
+    .site-header-nav {
+       display: flex;
+       align-items: center;
+       justify-content: flex-end;
+       flex-wrap: wrap;
+       padding: 0.75rem 0.75rem 0;
+    }
 
-   .menu-toggle {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: auto;
-   }
+    .menu-toggle {
+       display: inline-flex;
+       align-items: center;
+       justify-content: center;
+       margin-left: auto;
+    }
 
-   .nav-menu {
-      display: none;
-      flex-direction: column;
-      width: 100%;
-      align-items: flex-end;
-      margin-top: 0.5rem;
-   }
+    .nav-menu {
+       display: none;
+       flex-direction: column;
+       width: 100%;
+       align-items: stretch;
+       margin-top: 0.5rem;
+       margin-left: 0;
+    }
 
-   .site-header-nav.nav-open .nav-menu {
-      display: flex;
-   }
+    .site-header-nav.nav-open .nav-menu {
+       display: flex;
+    }
 
-   .aviala-home-table {
-      width: 100% !important;
-      margin: 0 !important;
-      display: block;
-   }
+    .aviala-home-table,
+    body > table {
+       width: 100% !important;
+       max-width: 100% !important;
+       margin: 0 !important;
+       display: block;
+    }
 
    .aviala-home-table tr {
       display: block;
@@ -387,6 +404,11 @@ h2 {
    gap: 1rem;
    width: min(100%, 760px);
    margin-top: 1rem;
+}
+
+.shop-gallery-grid {
+   width: min(100%, 520px);
+   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
 }
 
 .rounded-thumbnail,
