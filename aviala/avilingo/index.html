@@ -111,14 +111,16 @@
           .join("");
 
         searchResults.innerHTML = `
-          <div>
-            <p class="language-box">
+          <div class="species-result-panel">
+            <p class="language-box species-link-box">
               Read more about this species at
               <strong>
                 <a href="https://birdsoftheworld.org/bow/species/grefla3" target="_blank">Birds of the World</a>
               </strong>
             </p>
-            ${info}
+            <div class="species-result-grid">
+              ${info}
+            </div>
           </div>
         `;
       }

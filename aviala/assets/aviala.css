@@ -51,21 +51,25 @@ h2 {
 }
 
 .action-button {
-  font-family: "SN Pro", sans-serif;
-  font-weight: 500;
-  font-size: 1rem;
-  color: var(--text-primary);
-  text-align: center;
-  text-decoration: none;
-  padding: 0.4rem 1rem;
-  border-radius: 0;
-  cursor: pointer;
-  display: inline-block;
-  background-color: var(--control-background);
+   font-family: "SN Pro", sans-serif;
+   font-weight: 500;
+   font-size: 1rem;
+   color: var(--text-primary);
+   text-align: center;
+   text-decoration: none;
+   padding: 0.4rem 1rem;
+   border: 1px solid var(--control-border);
+   border-radius: 0;
+   cursor: pointer;
+   display: inline-block;
+   background-color: var(--control-background);
+   appearance: none;
+   -webkit-appearance: none;
+   line-height: normal;
 }
 
 .action-button:hover {
-  background-color: var(--page-background-start);
+   background-color: var(--page-background-start);
 }
 
 .selection {
@@ -98,43 +102,79 @@ h2 {
 }
 
 .search-box {
-  display: flex;
-  align-items: center;
-  background: var(--input-background);
-  padding: 0.4rem 0.6rem;
-  width: 250px;
-  border: 1px solid var(--input-background);
-  font-family: "Roboto", sans-serif;
-  font-weight: 300;
-  font-size: 0.75rem;
-  line-height: 1.6;
+   display: flex;
+   align-items: center;
+   background: var(--input-background);
+   padding: 0.4rem 0.6rem;
+   width: 250px;
+   border: 1px solid var(--control-border);
+   font-family: "Roboto", sans-serif;
+   font-weight: 300;
+   font-size: 0.75rem;
+   line-height: 1.6;
+   box-sizing: border-box;
 }
 
 .search-box input {
-  flex: 1;
-  border: none;
-  outline: none;
+   flex: 1;
+   border: none;
+   outline: none;
+   background: transparent;
+   color: #000000;
+   font-family: "Roboto", sans-serif;
+   font-weight: 300;
+   font-size: 0.75rem;
+}
+
+.search-box input::placeholder {
+   color: #6b6b6b;
 }
 
 .container {
    display: flex;
+   align-items: stretch;
+   gap: 0.35rem;
 }
 
 #search-results {
-   margin-top: 1rem;
+    margin-top: 1rem;
+    max-width: 860px;
+}
+
+#search-results .species-result-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+#search-results .species-result-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+#search-results .language-box {
+    margin: 0;
+    background: rgba(255, 255, 255, 0.04);
+    box-sizing: border-box;
+}
+
+#search-results .species-link-box {
+    width: 100%;
+    max-width: 520px;
 }
 
 #search-results .search-status {
-   margin-top: 0.5rem;
-   font-family: "Roboto", sans-serif;
-   font-weight: 300;
-   color: var(--text-primary);
+    margin-top: 0.5rem;
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    color: var(--text-primary);
 }
 
 #search-results .search-result-link {
-   color: var(--heading-primary);
-   cursor: pointer;
-   text-decoration: underline;
+    color: var(--heading-primary);
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .rounded-thumbnail {
