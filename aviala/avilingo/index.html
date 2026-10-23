@@ -536,6 +536,12 @@
           hideSuggestions();
         }
       });
+
+      const pageTimestamp = document.createElement("p");
+      pageTimestamp.className = "small-body";
+      pageTimestamp.style.marginTop = "1.5rem";
+      pageTimestamp.textContent = `Page updated: ${new Date().toISOString()}`;
+      document.body.appendChild(pageTimestamp);
     </script>
   </body>
 </html>
