@@ -61,12 +61,37 @@
         }
 
         const nameFields = [
-          { label: "Scientific/Latin", value: species.Scientific, italic: true },
-          { label: "English / English (AviList)", value: species["English_ AviList"] },
-          { label: "Spanish / Español", value: species.Spanish },
-          { label: "Norwegian / Norsk", value: species.Norwegian },
-          { label: "German / Deutsch", value: species.German },
-          { label: "French / Français", value: species.French }
+          {
+            label: "Scientific/Latin",
+            value: species.Scientific,
+            italic: true,
+            flag: "../assets/img/flag-earth.svg"
+          },
+          {
+            label: "English / English (AviList)",
+            value: species["English_ AviList"],
+            flag: "../assets/img/flag-uk.svg"
+          },
+          {
+            label: "Spanish / Español",
+            value: species.Spanish,
+            flag: "../assets/img/flag-spain.svg"
+          },
+          {
+            label: "Norwegian / Norsk",
+            value: species.Norwegian,
+            flag: "../assets/img/flag-norway.svg"
+          },
+          {
+            label: "German / Deutsch",
+            value: species.German,
+            flag: "../assets/img/flag-germany.svg"
+          },
+          {
+            label: "French / Français",
+            value: species.French,
+            flag: "../assets/img/flag-france.svg"
+          }
         ];
 
         const info = nameFields
@@ -75,6 +100,8 @@
             const valueHtml = field.italic ? `<i>${field.value}</i>` : field.value;
             return `
               <p class="language-box">
+                <img src="${field.flag}" style="width: 20px;" />
+                &nbsp;&nbsp;
                 <strong>${field.label}</strong>
                 <br />
                 ${valueHtml}
