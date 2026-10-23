@@ -118,6 +118,56 @@
         return total;
       }
 
+      function getBestMatch(species, query) {
+        const fields = [
+          { label: "Scientific", value: species.Scientific },
+          { label: "English", value: species["English_ AviList"] },
+          { label: "French", value: species.French },
+          { label: "Spanish", value: species.Spanish },
+          { label: "German", value: species.German },
+          { label: "Norwegian", value: species.Norwegian }
+        ];
+
+        let best = null;
+
+        fields.forEach((field) => {
+          if (!field.value) return;
+
+          const normalizedValue = normalizeText(field.value);
+          const matchIndex = normalizedValue.indexOf(query);
+
+          if (matchIndex === -1) return;
+
+          const score = (normalizedValue === query ? 100 : normalizedValue.startsWith(query) ? 70 : 35) - matchIndex;
+
+          if (!best || score > best.score) {
+            best = {
+              label: field.label,
+              value: field.value,
+              matchIndex,
+              score
+            };
+          }
+        });
+
+        return best;
+      }
+
+      function renderHighlightedMatch(value, query) {
+        const normalizedValue = normalizeText(value);
+        const matchIndex = normalizedValue.indexOf(query);
+
+        if (matchIndex === -1) {
+          return value;
+        }
+
+        const before = value.slice(0, matchIndex);
+        const matched = value.slice(matchIndex, matchIndex + query.length);
+        const after = value.slice(matchIndex + query.length);
+
+        return `${before}<mark>${matched}</mark>${after}`;
+      }
+
       function hideSuggestions() {
         suggestionDropdown.classList.add("hidden");
         suggestionDropdown.innerHTML = "";
@@ -130,14 +180,20 @@
         }
 
         suggestionDropdown.innerHTML = matches
-          .map(
-            (item) => `
+          .map((item) => {
+            const match = getBestMatch(item.species, item.query);
+            const matchedValue = match ? renderHighlightedMatch(match.value, item.query) : item.species.Scientific;
+
+            return `
               <button type="button" class="suggestion-item" data-scientific="${item.species.Scientific}">
                 <span class="suggestion-main">${item.species.Scientific}</span>
-                <span class="suggestion-secondary">${item.species["English_ AviList"] || item.species.French || item.species.Spanish || item.species.German || item.species.Norwegian}</span>
+                <span class="suggestion-secondary">
+                  <span class="suggestion-field">${match ? match.label : "Match"}:</span>
+                  ${matchedValue}
+                </span>
               </button>
-            `
-          )
+            `;
+          })
           .join("");
 
         suggestionDropdown.classList.remove("hidden");
@@ -166,7 +222,7 @@
         }
 
         const matches = speciesDatabase
-          .map((species) => ({ species, score: scoreSpecies(species, query) }))
+          .map((species) => ({ species, score: scoreSpecies(species, query), query }))
           .filter((item) => item.score > 0)
           .sort((a, b) => b.score - a.score)
           .slice(0, 8);

@@ -205,6 +205,17 @@ h2 {
     color: #4b3d61;
 }
 
+.suggestion-field {
+    font-weight: 500;
+    color: var(--page-background-start);
+}
+
+.suggestion-secondary mark {
+    background: #eaf6ad;
+    color: var(--page-background-start);
+    padding: 0 0.1rem;
+}
+
 .container {
     display: flex;
     align-items: stretch;
