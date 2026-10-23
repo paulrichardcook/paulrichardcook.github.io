@@ -153,12 +153,12 @@
 
       function getBestMatch(species, query) {
         const fields = [
-          { label: "Scientific", value: species.Scientific },
-          { label: "English", value: species["English_ AviList"] },
-          { label: "French", value: species.French },
-          { label: "Spanish", value: species.Spanish },
-          { label: "German", value: species.German },
-          { label: "Norwegian", value: species.Norwegian }
+          { label: "Scientific", value: species.Scientific, weight: 5 },
+          { label: "English", value: species["English_ AviList"], weight: 7 },
+          { label: "French", value: species.French, weight: 3 },
+          { label: "Spanish", value: species.Spanish, weight: 3 },
+          { label: "German", value: species.German, weight: 3 },
+          { label: "Norwegian", value: species.Norwegian, weight: 7 }
         ];
 
         let best = null;
@@ -171,25 +171,25 @@
           if (!normalizedValue || !normalizedQuery) return;
 
           let matchIndex = normalizedValue.indexOf(normalizedQuery);
-          let score = 0;
+          let matchBase = 0;
 
           if (matchIndex !== -1) {
-            score = (normalizedValue === normalizedQuery ? 100 : normalizedValue.startsWith(normalizedQuery) ? 70 : 35) - matchIndex;
+            matchBase = normalizedValue === normalizedQuery ? 100 : normalizedValue.startsWith(normalizedQuery) ? 70 : 35;
           } else {
             const queryTokens = normalizedQuery.split(/\s+/).filter(Boolean);
-            const tokenIndexes = queryTokens
-              .map((token) => ({ token, index: normalizedValue.indexOf(token) }))
-              .filter((entry) => entry.index !== -1);
+            const tokenMatches = queryTokens.filter((token) => normalizedValue.includes(token));
 
-            if (tokenIndexes.length > 0) {
-              const firstIndex = Math.min(...tokenIndexes.map((entry) => entry.index));
-              const allTokensPresent = queryTokens.every((token) => normalizedValue.includes(token));
-              score = (allTokensPresent ? 50 : 25) - firstIndex;
-              matchIndex = firstIndex;
+            if (tokenMatches.length > 0) {
+              const firstMatchIndex = Math.min(...tokenMatches.map((token) => normalizedValue.indexOf(token)));
+              const allTokensPresent = tokenMatches.length === queryTokens.length;
+              matchBase = allTokensPresent ? 50 : 25;
+              matchIndex = firstMatchIndex;
             }
           }
 
-          if (score <= 0 || matchIndex === -1) return;
+          if (matchBase <= 0 || matchIndex === -1) return;
+
+          const score = matchBase * field.weight + (100 - Math.max(matchIndex, 0));
 
           if (!best || score > best.score) {
             best = {
