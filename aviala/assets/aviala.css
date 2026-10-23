@@ -75,21 +75,48 @@ h2 {
 }
 
 .selection {
-  font-family: "SN Pro", sans-serif;
-  font-weight: 500;
-  font-size: 1rem;
-  color: var(--text-primary);
-  text-align: center;
-  text-decoration: none;
-  padding: 0.4rem 1rem;
-  border-radius: 0;
-  border: 1px solid var(--control-border);
-  cursor: pointer;
-  display: inline-block;
+   font-family: "SN Pro", sans-serif;
+   font-weight: 500;
+   font-size: 1rem;
+   color: var(--text-primary);
+   text-align: center;
+   text-decoration: none;
+   padding: 0.4rem 1rem;
+   border-radius: 0;
+   border: 1px solid var(--control-border);
+   cursor: pointer;
+   display: inline-block;
+}
+
+.site-header-nav {
+   display: flex;
+   justify-content: flex-end;
+   align-items: center;
+   gap: 0.4rem;
+   padding: 0.75rem 1rem 0;
+}
+
+.nav-menu {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: flex-end;
+   gap: 0.4rem;
+}
+
+.menu-toggle {
+   display: none;
+   border: 1px solid var(--control-border);
+   background: rgba(255, 255, 255, 0.08);
+   color: var(--text-primary);
+   font-size: 1.5rem;
+   line-height: 1;
+   width: 2.4rem;
+   height: 2.4rem;
+   cursor: pointer;
 }
 
 .selection:hover {
-  background-color: var(--control-background);
+   background-color: var(--control-background);
 }
 
 .language-box {
@@ -104,11 +131,12 @@ h2 {
 }
 
 .search-wrapper {
-    position: relative;
-    display: inline-block;
-}
+     position: relative;
+     display: inline-block;
+     width: 250px;
+ }
 
-.search-box {
+ .search-box {
     display: flex;
     align-items: center;
     background: var(--input-background);
@@ -157,17 +185,18 @@ h2 {
 }
 
 .suggestion-dropdown {
-    position: absolute;
-    top: calc(100% + 0.25rem);
-    left: 0;
-    width: 100%;
-    background: #ffffff;
-    border: 1px solid var(--control-border);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-    z-index: 10;
-    max-height: 260px;
-    overflow-y: auto;
-}
+     position: absolute;
+     top: calc(100% + 0.25rem);
+     left: 0;
+     width: 250px;
+     background: #ffffff;
+     border: 1px solid var(--control-border);
+     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+     z-index: 10;
+     max-height: 260px;
+     overflow-y: auto;
+     box-sizing: border-box;
+ }
 
 .suggestion-dropdown.hidden {
     display: none;
@@ -261,6 +290,66 @@ h2 {
     color: var(--heading-primary);
     cursor: pointer;
     text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+   .site-header-nav {
+      display: block;
+      padding: 0.75rem 0.75rem 0;
+   }
+
+   .menu-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: auto;
+   }
+
+   .nav-menu {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      align-items: flex-end;
+      margin-top: 0.5rem;
+   }
+
+   .site-header-nav.nav-open .nav-menu {
+      display: flex;
+   }
+
+   .aviala-home-table {
+      width: 100% !important;
+      margin: 0 !important;
+   }
+
+   .aviala-home-table td {
+      display: block;
+      width: 100%;
+      padding: 0 0.75rem;
+   }
+
+   .aviala-home-table img {
+      max-width: 100%;
+      height: auto;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      padding: 0 !important;
+   }
+
+   .rounded-thumbnail,
+   .rounded-merch {
+      width: 100%;
+      max-width: 220px;
+   }
+
+   h1 {
+      font-size: 2.2rem;
+   }
+
+   .selection {
+      width: 100%;
+      box-sizing: border-box;
+   }
 }
 
 .rounded-thumbnail {

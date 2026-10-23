@@ -11,6 +11,18 @@
     })
     .then((header) => {
       placeholder.outerHTML = header;
+
+      const siteHeader = document.querySelector(".site-header-nav");
+      const menuToggle = document.querySelector(".menu-toggle");
+      const navMenu = document.querySelector(".nav-menu");
+
+      if (siteHeader && menuToggle && navMenu) {
+        menuToggle.addEventListener("click", () => {
+          const isOpen = siteHeader.classList.toggle("nav-open");
+          menuToggle.setAttribute("aria-expanded", String(isOpen));
+          navMenu.classList.toggle("open", isOpen);
+        });
+      }
     })
     .catch((error) => {
       console.error("Unable to load the shared Aviala header.", error);
