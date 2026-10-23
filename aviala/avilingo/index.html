@@ -102,6 +102,22 @@
         return queryTokens.every((token) => normalizedValue.includes(token));
       }
 
+      function getQueryCoverage(value, query) {
+        const normalizedValue = normalizeText(value);
+        const normalizedQuery = normalizeText(query);
+
+        if (!normalizedValue || !normalizedQuery) {
+          return { matchedTokens: 0, allTokensPresent: false, phraseMatch: false };
+        }
+
+        const queryTokens = normalizedQuery.split(/\s+/).filter(Boolean);
+        const matchedTokens = queryTokens.filter((token) => normalizedValue.includes(token)).length;
+        const allTokensPresent = queryTokens.length > 0 && matchedTokens === queryTokens.length;
+        const phraseMatch = normalizedValue.includes(normalizedQuery);
+
+        return { matchedTokens, allTokensPresent, phraseMatch };
+      }
+
       function scoreSpecies(species, query) {
         const fields = [
           { value: species.Scientific, weight: 5 },
@@ -132,18 +148,17 @@
             return;
           }
 
-          if (normalizedValue.includes(normalizedQuery)) {
+          const coverage = getQueryCoverage(normalizedValue, normalizedQuery);
+          if (coverage.phraseMatch) {
             total += 35 * weight;
             return;
           }
 
           if (queryTokens.length > 1) {
-            const matchedTokens = queryTokens.filter((token) => normalizedValue.includes(token)).length;
-            if (matchedTokens > 0) {
-              total += (matchedTokens / queryTokens.length) * 55 * weight;
-              if (matchedTokens === queryTokens.length) {
-                total += 20 * weight;
-              }
+            if (coverage.allTokensPresent) {
+              total += 60 * weight;
+            } else if (coverage.matchedTokens > 0) {
+              total += (coverage.matchedTokens / queryTokens.length) * 45 * weight;
             }
           }
         });
@@ -296,7 +311,7 @@
         const matches = speciesDatabase
           .map((species) => ({ species, score: scoreSpecies(species, query), query }))
           .filter((item) => item.score > 0)
-          .sort((a, b) => b.score - a.score)
+          .sort((a, b) => b.score - a.score || a.species.Scientific.localeCompare(b.species.Scientific))
           .slice(0, 8);
 
         showSuggestions(matches);
