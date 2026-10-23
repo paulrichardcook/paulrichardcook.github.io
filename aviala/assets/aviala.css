@@ -101,39 +101,93 @@ h2 {
   color: var(--text-primary);
 }
 
+.search-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
 .search-box {
-   display: flex;
-   align-items: center;
-   background: var(--input-background);
-   padding: 0.4rem 0.6rem;
-   width: 250px;
-   border: 1px solid var(--control-border);
-   font-family: "Roboto", sans-serif;
-   font-weight: 300;
-   font-size: 0.75rem;
-   line-height: 1.6;
-   box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    background: var(--input-background);
+    padding: 0.4rem 0.6rem;
+    width: 250px;
+    border: 1px solid var(--control-border);
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    box-sizing: border-box;
 }
 
 .search-box input {
-   flex: 1;
-   border: none;
-   outline: none;
-   background: transparent;
-   color: #000000;
-   font-family: "Roboto", sans-serif;
-   font-weight: 300;
-   font-size: 0.75rem;
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #000000;
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    font-size: 0.75rem;
 }
 
 .search-box input::placeholder {
-   color: #6b6b6b;
+    color: #6b6b6b;
+}
+
+.suggestion-dropdown {
+    position: absolute;
+    top: calc(100% + 0.25rem);
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid var(--control-border);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.suggestion-dropdown.hidden {
+    display: none;
+}
+
+.suggestion-item {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.1rem;
+    padding: 0.55rem 0.75rem;
+    border: none;
+    border-bottom: 1px solid rgba(39, 14, 86, 0.12);
+    background: #ffffff;
+    color: #1d1232;
+    text-align: left;
+    cursor: pointer;
+    font-family: "Roboto", sans-serif;
+}
+
+.suggestion-item:hover,
+.suggestion-item:focus {
+    background: rgba(104, 86, 137, 0.12);
+    outline: none;
+}
+
+.suggestion-main {
+    font-weight: 500;
+    color: var(--page-background-start);
+}
+
+.suggestion-secondary {
+    font-size: 0.7rem;
+    color: #4b3d61;
 }
 
 .container {
-   display: flex;
-   align-items: stretch;
-   gap: 0.35rem;
+    display: flex;
+    align-items: stretch;
+    gap: 0.35rem;
 }
 
 #search-results {

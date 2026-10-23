@@ -29,16 +29,17 @@
           <p>Have you ever wondered about the names of birds in other languages?</p>
 
           <div class="container">
-            <div class="search-box">
-              <input
-                id="species-search"
-                type="text"
-                list="species-suggestions"
-                autocomplete="off"
-                placeholder="Search a species..."
-              />
+            <div class="search-wrapper">
+              <div class="search-box">
+                <input
+                  id="species-search"
+                  type="text"
+                  autocomplete="off"
+                  placeholder="Search a species..."
+                />
+              </div>
+              <div id="suggestion-dropdown" class="suggestion-dropdown hidden"></div>
             </div>
-            <datalist id="species-suggestions"></datalist>
             &nbsp;
             <button type="button" class="action-button" id="search-button">
               Search &gt;
@@ -54,28 +55,109 @@
       const searchInput = document.getElementById("species-search");
       const searchButton = document.getElementById("search-button");
       const searchResults = document.getElementById("search-results");
-      const suggestionsList = document.getElementById("species-suggestions");
+      const suggestionDropdown = document.getElementById("suggestion-dropdown");
       let speciesDatabase = [];
 
-      function updateSuggestions() {
-        const query = searchInput.value.trim();
+      function normalizeText(value) {
+        return String(value)
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .replace(/[^a-z0-9\s]/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
 
-        if (query.length < 4) {
-          suggestionsList.innerHTML = "";
+      function scoreSpecies(species, query) {
+        const fields = [
+          { value: species.Scientific, weight: 6 },
+          { value: species["English_ AviList"], weight: 4 },
+          { value: species.French, weight: 3 },
+          { value: species.Spanish, weight: 3 },
+          { value: species.German, weight: 3 },
+          { value: species.Norwegian, weight: 3 }
+        ];
+
+        let total = 0;
+
+        fields.forEach(({ value, weight }) => {
+          if (!value) return;
+
+          const normalizedValue = normalizeText(value);
+          if (!normalizedValue) return;
+
+          if (normalizedValue === query) {
+            total += 100 * weight;
+            return;
+          }
+
+          if (normalizedValue.startsWith(query)) {
+            total += 70 * weight;
+            return;
+          }
+
+          if (normalizedValue.includes(query)) {
+            total += 35 * weight;
+          }
+        });
+
+        return total;
+      }
+
+      function hideSuggestions() {
+        suggestionDropdown.classList.add("hidden");
+        suggestionDropdown.innerHTML = "";
+      }
+
+      function showSuggestions(matches) {
+        if (!matches.length) {
+          hideSuggestions();
+          return;
+        }
+
+        suggestionDropdown.innerHTML = matches
+          .map(
+            (item) => `
+              <button type="button" class="suggestion-item" data-scientific="${item.species.Scientific}">
+                <span class="suggestion-main">${item.species.Scientific}</span>
+                <span class="suggestion-secondary">${item.species["English_ AviList"] || item.species.French || item.species.Spanish || item.species.German || item.species.Norwegian}</span>
+              </button>
+            `
+          )
+          .join("");
+
+        suggestionDropdown.classList.remove("hidden");
+
+        suggestionDropdown.querySelectorAll(".suggestion-item").forEach((button) => {
+          button.addEventListener("click", () => {
+            const selected = speciesDatabase.find(
+              (species) => species.Scientific === button.dataset.scientific
+            );
+
+            if (selected) {
+              searchInput.value = selected.Scientific;
+              hideSuggestions();
+              renderSpecies(selected);
+            }
+          });
+        });
+      }
+
+      function updateSuggestions() {
+        const query = normalizeText(searchInput.value);
+
+        if (query.length < 2) {
+          hideSuggestions();
           return;
         }
 
         const matches = speciesDatabase
-          .filter((species) =>
-            Object.values(species).some((value) =>
-              String(value).toLowerCase().includes(query.toLowerCase())
-            )
-          )
+          .map((species) => ({ species, score: scoreSpecies(species, query) }))
+          .filter((item) => item.score > 0)
+          .sort((a, b) => b.score - a.score)
           .slice(0, 8);
 
-        suggestionsList.innerHTML = matches
-          .map((species) => `<option value="${species.Scientific}"></option>`)
-          .join("");
+        showSuggestions(matches);
       }
 
       function renderSpecies(species) {
@@ -207,9 +289,17 @@
 
       searchButton.addEventListener("click", updateSearchResults);
       searchInput.addEventListener("input", updateSuggestions);
+      searchInput.addEventListener("focus", updateSuggestions);
       searchInput.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
+          hideSuggestions();
           updateSearchResults();
+        }
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!event.target.closest(".search-wrapper") && !event.target.closest(".suggestion-item")) {
+          hideSuggestions();
         }
       });
     </script>
