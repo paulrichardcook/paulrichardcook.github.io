@@ -176,18 +176,20 @@ h2 {
 }
 
 .carousel-arrow {
-   background: var(--control-background);
+   background: transparent;
    color: var(--text-primary);
-   border: 1px solid var(--control-border);
-   width: 2.25rem;
-   height: 2.25rem;
-   font-size: 1.5rem;
+   border: none;
+   width: 2rem;
+   height: 2rem;
+   font-size: 1.8rem;
    line-height: 1;
    cursor: pointer;
+   padding: 0;
+   opacity: 0.8;
 }
 
 .carousel-arrow:hover {
-   background: var(--page-background-start);
+   opacity: 1;
 }
 
 .carousel-dots {
@@ -198,16 +200,18 @@ h2 {
 }
 
 .dot {
-   width: 0.75rem;
-   height: 0.75rem;
+   width: 0.6rem;
+   height: 0.6rem;
    border-radius: 50%;
-   border: 1px solid var(--control-border);
-   background: rgba(255, 255, 255, 0.3);
+   border: 1px solid rgba(255, 255, 255, 0.8);
+   background: transparent;
    cursor: pointer;
+   padding: 0;
 }
 
 .dot.active {
    background: var(--heading-primary);
+   border-color: var(--heading-primary);
 }
 
 .language-box {

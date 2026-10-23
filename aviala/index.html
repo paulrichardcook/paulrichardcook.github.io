@@ -20,35 +20,6 @@
     <div id="site-header"></div>
     <script src="assets/header.js"></script>
 
-    <script>
-      const slides = Array.from(document.querySelectorAll(".project-slide"));
-      const dots = Array.from(document.querySelectorAll(".dot"));
-      const prevButton = document.querySelector(".carousel-arrow.prev");
-      const nextButton = document.querySelector(".carousel-arrow.next");
-
-      let currentSlide = 0;
-
-      function showSlide(index) {
-        currentSlide = (index + slides.length) % slides.length;
-
-        slides.forEach((slide, slideIndex) => {
-          slide.classList.toggle("active", slideIndex === currentSlide);
-        });
-
-        dots.forEach((dot, dotIndex) => {
-          dot.classList.toggle("active", dotIndex === currentSlide);
-        });
-      }
-
-      prevButton.addEventListener("click", () => showSlide(currentSlide - 1));
-      nextButton.addEventListener("click", () => showSlide(currentSlide + 1));
-      dots.forEach((dot, index) => {
-        dot.addEventListener("click", () => showSlide(index));
-      });
-
-      setInterval(() => showSlide(currentSlide + 1), 6000);
-    </script>
-
     <table class="aviala-home-table" style="width: 80vw; margin-left: auto; margin-right: auto;">
       <tr>
         <td valign="top">
@@ -166,5 +137,36 @@
             </td>
       </tr>
     </table>
+
+    <script>
+      const slides = Array.from(document.querySelectorAll(".project-slide"));
+      const dots = Array.from(document.querySelectorAll(".dot"));
+      const prevButton = document.querySelector(".carousel-arrow.prev");
+      const nextButton = document.querySelector(".carousel-arrow.next");
+
+      if (slides.length && dots.length && prevButton && nextButton) {
+        let currentSlide = 0;
+
+        function showSlide(index) {
+          currentSlide = (index + slides.length) % slides.length;
+
+          slides.forEach((slide, slideIndex) => {
+            slide.classList.toggle("active", slideIndex === currentSlide);
+          });
+
+          dots.forEach((dot, dotIndex) => {
+            dot.classList.toggle("active", dotIndex === currentSlide);
+          });
+        }
+
+        prevButton.addEventListener("click", () => showSlide(currentSlide - 1));
+        nextButton.addEventListener("click", () => showSlide(currentSlide + 1));
+        dots.forEach((dot, index) => {
+          dot.addEventListener("click", () => showSlide(index));
+        });
+
+        setInterval(() => showSlide(currentSlide + 1), 6000);
+      }
+    </script>
   </body>
 </html>
