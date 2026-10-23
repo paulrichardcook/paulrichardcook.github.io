@@ -93,29 +93,102 @@
         const normalizedQuery = normalizeText(query);
 
         if (!normalizedValue || !normalizedQuery) return false;
-        if (normalizedValue === normalizedQuery) return true;
-        if (normalizedValue.includes(normalizedQuery)) return true;
 
         const queryTokens = normalizedQuery.split(/\s+/).filter(Boolean);
-        if (queryTokens.length <= 1) return false;
+        if (queryTokens.length === 0) return false;
 
-        return queryTokens.every((token) => normalizedValue.includes(token));
+        if (normalizedValue === normalizedQuery) return true;
+        if (normalizedValue.includes(normalizedQuery)) return true;
+        if (queryTokens.length === 1) return normalizedValue.includes(queryTokens[0]);
+
+        const orderedMatch = (() => {
+          let lastIndex = -1;
+          return queryTokens.every((token) => {
+            const index = normalizedValue.indexOf(token, lastIndex + 1);
+            if (index === -1) return false;
+            lastIndex = index;
+            return true;
+          });
+        })();
+
+        const reverseOrderedMatch = (() => {
+          const reversedTokens = [...queryTokens].reverse();
+          let lastIndex = -1;
+          return reversedTokens.every((token) => {
+            const index = normalizedValue.indexOf(token, lastIndex + 1);
+            if (index === -1) return false;
+            lastIndex = index;
+            return true;
+          });
+        })();
+
+        return orderedMatch || reverseOrderedMatch || queryTokens.every((token) => normalizedValue.includes(token));
       }
 
-      function getQueryCoverage(value, query) {
+      function getFieldMatchScore(value, query) {
         const normalizedValue = normalizeText(value);
         const normalizedQuery = normalizeText(query);
 
         if (!normalizedValue || !normalizedQuery) {
-          return { matchedTokens: 0, allTokensPresent: false, phraseMatch: false };
+          return { base: 0, tokenCoverage: 0, orderedMatch: false, reverseOrderedMatch: false, phraseMatch: false, allTokensPresent: false };
+        }
+
+        if (normalizedValue === normalizedQuery) {
+          return { base: 100, tokenCoverage: 1, orderedMatch: true, reverseOrderedMatch: true, phraseMatch: true, allTokensPresent: true };
+        }
+
+        if (normalizedValue.startsWith(normalizedQuery)) {
+          return { base: 80, tokenCoverage: 1, orderedMatch: true, reverseOrderedMatch: true, phraseMatch: true, allTokensPresent: true };
         }
 
         const queryTokens = normalizedQuery.split(/\s+/).filter(Boolean);
-        const matchedTokens = queryTokens.filter((token) => normalizedValue.includes(token)).length;
-        const allTokensPresent = queryTokens.length > 0 && matchedTokens === queryTokens.length;
-        const phraseMatch = normalizedValue.includes(normalizedQuery);
+        const tokenCoverage = queryTokens.length
+          ? queryTokens.filter((token) => normalizedValue.includes(token)).length / queryTokens.length
+          : 0;
+        const allTokensPresent = queryTokens.length > 0 && tokenCoverage === 1;
 
-        return { matchedTokens, allTokensPresent, phraseMatch };
+        let orderedMatch = false;
+        let reverseOrderedMatch = false;
+        if (queryTokens.length > 1) {
+          let lastIndex = -1;
+          orderedMatch = queryTokens.every((token) => {
+            const index = normalizedValue.indexOf(token, lastIndex + 1);
+            if (index === -1) return false;
+            lastIndex = index;
+            return true;
+          });
+
+          const reversedTokens = [...queryTokens].reverse();
+          lastIndex = -1;
+          reverseOrderedMatch = reversedTokens.every((token) => {
+            const index = normalizedValue.indexOf(token, lastIndex + 1);
+            if (index === -1) return false;
+            lastIndex = index;
+            return true;
+          });
+        }
+
+        const phraseMatch = normalizedValue.includes(normalizedQuery);
+        const base = phraseMatch
+          ? 70
+          : orderedMatch
+            ? 65
+            : reverseOrderedMatch
+              ? 60
+              : allTokensPresent
+                ? 55
+                : tokenCoverage > 0
+                  ? 30
+                  : 0;
+
+        return {
+          base,
+          tokenCoverage,
+          orderedMatch,
+          reverseOrderedMatch,
+          phraseMatch,
+          allTokensPresent
+        };
       }
 
       function scoreSpecies(species, query) {
@@ -130,37 +203,28 @@
 
         let total = 0;
         const normalizedQuery = normalizeText(query);
-        const queryTokens = normalizedQuery.split(/\s+/).filter(Boolean);
 
         fields.forEach(({ value, weight }) => {
           if (!value) return;
 
-          const normalizedValue = normalizeText(value);
-          if (!normalizedValue || !normalizedQuery) return;
+          const match = getFieldMatchScore(value, normalizedQuery);
+          if (match.base <= 0) return;
 
-          if (normalizedValue === normalizedQuery) {
-            total += 100 * weight;
-            return;
+          let fieldScore = match.base * weight;
+
+          if (match.tokenCoverage > 0) {
+            fieldScore += match.tokenCoverage * 25 * weight;
           }
 
-          if (normalizedValue.startsWith(normalizedQuery)) {
-            total += 70 * weight;
-            return;
+          if (match.phraseMatch) {
+            fieldScore += 15 * weight;
           }
 
-          const coverage = getQueryCoverage(normalizedValue, normalizedQuery);
-          if (coverage.phraseMatch) {
-            total += 35 * weight;
-            return;
+          if (match.orderedMatch || match.reverseOrderedMatch) {
+            fieldScore += 10 * weight;
           }
 
-          if (queryTokens.length > 1) {
-            if (coverage.allTokensPresent) {
-              total += 60 * weight;
-            } else if (coverage.matchedTokens > 0) {
-              total += (coverage.matchedTokens / queryTokens.length) * 45 * weight;
-            }
-          }
+          total += fieldScore;
         });
 
         return total;
@@ -185,26 +249,22 @@
           const normalizedQuery = normalizeText(query);
           if (!normalizedValue || !normalizedQuery) return;
 
-          let matchIndex = normalizedValue.indexOf(normalizedQuery);
-          let matchBase = 0;
+          const match = getFieldMatchScore(field.value, normalizedQuery);
+          if (match.base <= 0) return;
 
-          if (matchIndex !== -1) {
-            matchBase = normalizedValue === normalizedQuery ? 100 : normalizedValue.startsWith(normalizedQuery) ? 70 : 35;
-          } else {
-            const queryTokens = normalizedQuery.split(/\s+/).filter(Boolean);
-            const tokenMatches = queryTokens.filter((token) => normalizedValue.includes(token));
+          const queryTokens = normalizedQuery.split(/\s+/).filter(Boolean);
+          const tokenIndices = queryTokens
+            .map((token) => normalizedValue.indexOf(token))
+            .filter((index) => index !== -1)
+            .sort((a, b) => a - b);
 
-            if (tokenMatches.length > 0) {
-              const firstMatchIndex = Math.min(...tokenMatches.map((token) => normalizedValue.indexOf(token)));
-              const allTokensPresent = tokenMatches.length === queryTokens.length;
-              matchBase = allTokensPresent ? 50 : 25;
-              matchIndex = firstMatchIndex;
-            }
-          }
+          const matchIndex = normalizedValue.indexOf(normalizedQuery) !== -1
+            ? normalizedValue.indexOf(normalizedQuery)
+            : tokenIndices[0] ?? -1;
 
-          if (matchBase <= 0 || matchIndex === -1) return;
+          if (matchIndex === -1) return;
 
-          const score = matchBase * field.weight + (100 - Math.max(matchIndex, 0));
+          const score = match.base * field.weight + match.tokenCoverage * 25 * field.weight + ((match.orderedMatch || match.reverseOrderedMatch) ? 10 * field.weight : 0) + (100 - Math.max(matchIndex, 0));
 
           if (!best || score > best.score) {
             best = {
