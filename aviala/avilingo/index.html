@@ -184,8 +184,8 @@
           }).join("");
           const hasMoreThanTwenty = matches.length > 20, matchCount = hasMoreThanTwenty ? "20+" : matches.length;
           const matchSummary = hasMoreThanTwenty
-            ? `Showing ${matchCount} matches. Showing best matches. To narrow your results, try typing more characters in the search box.`
-            : `Showing ${matchCount} match${matches.length === 1 ? "" : "es"}.`;
+            ? `${matchCount} matches. Showing best matches. To narrow your results, try typing more characters in the search box.`
+            : `${matchCount} match${matches.length === 1 ? "" : "es"}.`;
           searchResults.insertAdjacentHTML("beforeend", `<p class="search-status match-summary">${matchSummary}</p><br /><p class="search-status search-result-list">${links}</p>`);
           searchResults.querySelectorAll(".search-result-link").forEach((link) => link.addEventListener("click", () => {
             const selected = speciesDatabase.find((species) => species.Scientific === link.dataset.scientific);
