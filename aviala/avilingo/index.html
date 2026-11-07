@@ -478,10 +478,13 @@
         if (matches.length > 1) {
           const links = matches
             .slice(0, 20)
-            .map(
-              (species) =>
-                `<span class="search-result-link" data-scientific="${species.Scientific}">${species.Scientific}</span><br />`
-            )
+            .map((species) => {
+              const englishName = species["English_ AviList"];
+              const displayName = englishName
+                ? `${species.Scientific} (${englishName})`
+                : species.Scientific;
+              return `<span class="search-result-link" data-scientific="${species.Scientific}">${displayName}</span><br />`;
+            })
             .join("");
           const narrowingMessage = matches.length > 20
             ? "<br />To narrow your results, try typing more characters in the search box."
