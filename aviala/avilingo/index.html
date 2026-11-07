@@ -455,6 +455,7 @@
               ${info}
             </div>
           </div>
+          <br />
         `;
       }
 
@@ -479,16 +480,16 @@
             .slice(0, 20)
             .map(
               (species) =>
-                `<span class="search-result-link" data-scientific="${species.Scientific}">${species.Scientific}</span>`
+                `<span class="search-result-link" data-scientific="${species.Scientific}">${species.Scientific}</span><br />`
             )
-            .join(" &nbsp; ");
+            .join("");
           const narrowingMessage = matches.length > 20
-            ? " To narrow your results, try typing more characters in the search box."
+            ? "<br />To narrow your results, try typing more characters in the search box."
             : "";
 
           searchResults.insertAdjacentHTML(
             "beforeend",
-            `<p class="search-status">Showing ${matches.length} match${matches.length > 1 ? "es" : ""}. ${links}${narrowingMessage}</p>`
+            `<p class="search-status">Showing ${matches.length} match${matches.length > 1 ? "es" : ""}.<br />${links}${narrowingMessage}</p>`
           );
 
           searchResults.querySelectorAll(".search-result-link").forEach((link) => {
