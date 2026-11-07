@@ -4,15 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Avilingo - Bird name translator</title>
-
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=SN+Pro:ital,wght@0,200..900;1,200..900&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=SN+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../assets/aviala.css" />
     <link rel="icon" href="../assets/img/aviala-favicon.ico" />
     <style>
@@ -25,7 +18,6 @@
       }
     </style>
   </head>
-
   <body>
     <div id="site-header"></div>
     <script src="../assets/header.js"></script>
@@ -35,7 +27,6 @@
         <td>
           <h2>&lt;&nbsp;&gt;&nbsp;Avilingo</h2>
           <p>Have you ever wondered about the names of birds in other languages?</p>
-
           <div class="container">
             <div class="search-wrapper">
               <div class="search-box">
@@ -47,7 +38,6 @@
             &nbsp;
             <button type="button" class="action-button" id="search-button">Search &gt;</button>
           </div>
-
           <div id="search-results"></div>
           <p><a class="selection" href="/aviala/">Back to Aviala</a></p>
         </td>
@@ -67,13 +57,7 @@
       }
 
       function normalizeText(value) {
-        return String(value)
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .toLowerCase()
-          .replace(/[^a-z0-9\s]/g, " ")
-          .replace(/\s+/g, " ")
-          .trim();
+        return String(value).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
       }
 
       function textMatchesQuery(value, query) {
@@ -81,12 +65,10 @@
         const normalizedValue = normalizeText(value);
         const normalizedQuery = normalizeText(query);
         if (!normalizedValue || !normalizedQuery) return false;
-
         const queryTokens = normalizedQuery.split(/\s+/).filter(Boolean);
         if (!queryTokens.length) return false;
         if (normalizedValue === normalizedQuery || normalizedValue.includes(normalizedQuery)) return true;
         if (queryTokens.length === 1) return normalizedValue.includes(queryTokens[0]);
-
         const orderedMatch = (() => {
           let lastIndex = -1;
           return queryTokens.every((token) => {
@@ -113,13 +95,8 @@
         const normalizedQuery = normalizeText(query);
         const emptyScore = { base: 0, tokenCoverage: 0, orderedMatch: false, reverseOrderedMatch: false, phraseMatch: false, allTokensPresent: false, fullWordMatch: false };
         if (!normalizedValue || !normalizedQuery) return emptyScore;
-        if (normalizedValue === normalizedQuery) {
-          return { base: 100, tokenCoverage: 1, orderedMatch: true, reverseOrderedMatch: true, phraseMatch: true, allTokensPresent: true, fullWordMatch: true };
-        }
-        if (normalizedValue.startsWith(normalizedQuery)) {
-          return { base: 80, tokenCoverage: 1, orderedMatch: true, reverseOrderedMatch: true, phraseMatch: true, allTokensPresent: true, fullWordMatch: true };
-        }
-
+        if (normalizedValue === normalizedQuery) return { base: 100, tokenCoverage: 1, orderedMatch: true, reverseOrderedMatch: true, phraseMatch: true, allTokensPresent: true, fullWordMatch: true };
+        if (normalizedValue.startsWith(normalizedQuery)) return { base: 80, tokenCoverage: 1, orderedMatch: true, reverseOrderedMatch: true, phraseMatch: true, allTokensPresent: true, fullWordMatch: true };
         const queryTokens = normalizedQuery.split(/\s+/).filter(Boolean);
         const matchedTokens = queryTokens.filter((token) => normalizedValue.includes(token));
         const tokenCoverage = queryTokens.length ? matchedTokens.length / queryTokens.length : 0;
@@ -201,9 +178,7 @@
           const exactIndex = normalizedValue.indexOf(normalizedQuery);
           const matchIndex = exactIndex !== -1 ? exactIndex : tokenIndices[0] ?? -1;
           if (matchIndex === -1) return;
-          const score = match.base * field.weight + match.tokenCoverage * 25 * field.weight
-            + ((match.orderedMatch || match.reverseOrderedMatch) ? 10 * field.weight : 0)
-            + (100 - Math.max(matchIndex, 0));
+          const score = match.base * field.weight + match.tokenCoverage * 25 * field.weight + ((match.orderedMatch || match.reverseOrderedMatch) ? 10 * field.weight : 0) + (100 - Math.max(matchIndex, 0));
           if (!best || score > best.score) best = { label: field.label, value: field.value, matchIndex, score };
         });
         return best;
@@ -214,9 +189,7 @@
         const normalizedQuery = normalizeText(query);
         if (!normalizedValue || !normalizedQuery) return value;
         const exactIndex = normalizedValue.indexOf(normalizedQuery);
-        if (exactIndex !== -1) {
-          return `${value.slice(0, exactIndex)}<mark>${value.slice(exactIndex, exactIndex + normalizedQuery.length)}</mark>${value.slice(exactIndex + normalizedQuery.length)}`;
-        }
+        if (exactIndex !== -1) return `${value.slice(0, exactIndex)}<mark>${value.slice(exactIndex, exactIndex + normalizedQuery.length)}</mark>${value.slice(exactIndex + normalizedQuery.length)}`;
         for (const token of normalizedQuery.split(/\s+/).filter(Boolean)) {
           const tokenIndex = normalizedValue.indexOf(token);
           if (tokenIndex !== -1) return `${value.slice(0, tokenIndex)}<mark>${value.slice(tokenIndex, tokenIndex + token.length)}</mark>${value.slice(tokenIndex + token.length)}`;
@@ -236,11 +209,7 @@
           const englishName = item.species["English_ AviList"] || "";
           const englishMatch = englishName ? renderHighlightedMatch(englishName, item.query) : "";
           const matchedValue = match ? renderHighlightedMatch(match.value, item.query) : item.species.Scientific;
-          return `<button type="button" class="suggestion-item" data-scientific="${item.species.Scientific}">
-            <span class="suggestion-main">${item.species.Scientific}</span>
-            <span class="suggestion-secondary"><span class="suggestion-field">English:</span> ${englishMatch || englishName || "—"}</span>
-            <span class="suggestion-secondary"><span class="suggestion-field">${match ? match.label : "Match"}:</span> ${matchedValue}</span>
-          </button>`;
+          return `<button type="button" class="suggestion-item" data-scientific="${item.species.Scientific}"><span class="suggestion-main">${item.species.Scientific}</span><span class="suggestion-secondary"><span class="suggestion-field">English:</span> ${englishMatch || englishName || "—"}</span><span class="suggestion-secondary"><span class="suggestion-field">${match ? match.label : "Match"}:</span> ${matchedValue}</span></button>`;
         }).join("");
         suggestionDropdown.classList.remove("hidden");
         suggestionDropdown.querySelectorAll(".suggestion-item").forEach((button) => {
@@ -258,8 +227,7 @@
       function updateSuggestions() {
         const query = normalizeText(searchInput.value);
         if (query.length < 2) return hideSuggestions();
-        const matches = speciesDatabase
-          .map((species) => ({ species, score: scoreSpecies(species, query), query }))
+        const matches = speciesDatabase.map((species) => ({ species, score: scoreSpecies(species, query), query }))
           .filter((item) => item.score > 0)
           .sort((a, b) => b.score - a.score || a.species.Scientific.localeCompare(b.species.Scientific))
           .slice(0, 8);
@@ -283,10 +251,7 @@
           const valueHtml = field.italic ? `<i>${field.value}</i>` : field.value;
           return `<p class="language-box"><img src="${field.flag}" style="width: 20px;" />&nbsp;&nbsp;<strong>${field.label}</strong><br />${valueHtml}</p>`;
         }).join("");
-        searchResults.innerHTML = `<div class="species-result-panel">
-          <p class="language-box species-link-box">Read more about this species at <strong><a href="https://birdsoftheworld.org/bow/species/grefla3" target="_blank">Birds of the World</a></strong></p>
-          <div class="species-result-grid">${info}</div>
-        </div><br />`;
+        searchResults.innerHTML = `<div class="species-result-panel"><p class="language-box species-link-box">Read more about this species at <strong><a href="https://birdsoftheworld.org/bow/species/grefla3" target="_blank">Birds of the World</a></strong></p><div class="species-result-grid">${info}</div></div><br />`;
       }
 
       function findMatches(query) {
@@ -304,8 +269,12 @@
             const displayName = englishName ? `${species.Scientific} (${englishName})` : species.Scientific;
             return `<span class="search-result-link" data-scientific="${species.Scientific}">${displayName}</span><br />`;
           }).join("");
-          const narrowingMessage = matches.length > 20 ? "<br />To narrow your results, try typing more characters in the search box." : "";
-          searchResults.insertAdjacentHTML("beforeend", `<p class="search-status">Showing ${matches.length} matches.<br />${links}${narrowingMessage}</p>`);
+          const hasMoreThanTwenty = matches.length > 20;
+          const matchCount = hasMoreThanTwenty ? "20+" : matches.length;
+          const matchSummary = hasMoreThanTwenty
+            ? `Showing ${matchCount} matches.<br />Showing best matches.<br />To narrow your results, try typing more characters in the search box.`
+            : `Showing ${matchCount} match${matches.length === 1 ? "" : "es"}.`;
+          searchResults.insertAdjacentHTML("beforeend", `<p class="search-status">${matchSummary}<br />${links}</p>`);
           searchResults.querySelectorAll(".search-result-link").forEach((link) => {
             link.addEventListener("click", () => {
               const selected = speciesDatabase.find((species) => species.Scientific === link.dataset.scientific);
@@ -353,7 +322,6 @@
       pageTimestamp.className = "small-body";
       pageTimestamp.textContent = "Last updated: Loading…";
       document.body.appendChild(pageTimestamp);
-
       fetch("https://api.github.com/repos/paulrichardcook/paulrichardcook.github.io/commits?path=aviala%2Favilingo%2Findex.html&per_page=1")
         .then((response) => {
           if (!response.ok) throw new Error("Unable to retrieve the latest update date.");
