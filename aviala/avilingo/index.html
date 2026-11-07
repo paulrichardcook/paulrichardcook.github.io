@@ -476,16 +476,19 @@
 
         if (matches.length > 1) {
           const links = matches
-            .slice(0, 5)
+            .slice(0, 20)
             .map(
               (species) =>
                 `<span class="search-result-link" data-scientific="${species.Scientific}">${species.Scientific}</span>`
             )
             .join(" &nbsp; ");
+          const narrowingMessage = matches.length > 20
+            ? " To narrow your results, try typing more characters in the search box."
+            : "";
 
           searchResults.insertAdjacentHTML(
             "beforeend",
-            `<p class="search-status">Showing ${matches.length} match${matches.length > 1 ? "es" : ""}. ${links}</p>`
+            `<p class="search-status">Showing ${matches.length} match${matches.length > 1 ? "es" : ""}. ${links}${narrowingMessage}</p>`
           );
 
           searchResults.querySelectorAll(".search-result-link").forEach((link) => {
