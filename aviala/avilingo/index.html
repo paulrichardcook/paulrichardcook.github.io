@@ -43,6 +43,7 @@
       const searchResults = document.getElementById("search-results");
       const suggestionDropdown = document.getElementById("suggestion-dropdown");
       let speciesDatabase = [];
+      let birdsOfTheWorldLookup = new Map();
 
       function updateClearButton() { clearSearchButton.classList.toggle("hidden", !searchInput.value.trim()); }
       function normalizeText(value) {
@@ -78,7 +79,7 @@
         }
         const phraseMatch = normalizedValue.includes(normalizedQuery);
         let base = 0;
-        if (fullWordMatch) base = 90; else if (phraseMatch) base = 70; else if (orderedMatch) base = 65; else if (reverseOrderedMatch) base = 60; else if (allTokensPresent) base = 55; else if (tokenCoverage > 0) base = 30;
+        if (fullWordMatch) base = 90; else if (phraseMatch) base = 70; else if (orderedMatch) base = 65; else if (reverseOrderedMatch) base = 60; else if (allTokensPresent) base = 55; else if (tokenCoverage > 0) base = 40 + tokenCoverage * 30;
         return { base, tokenCoverage, orderedMatch, reverseOrderedMatch, phraseMatch, allTokensPresent, fullWordMatch };
       }
       function scoreSpecies(species, query) {
@@ -138,7 +139,7 @@
         suggestionDropdown.innerHTML = matches.map((item) => {
           const match = getBestMatch(item.species, item.query), englishName = item.species["English_ AviList"] || "";
           const englishMatch = englishName ? renderHighlightedMatch(englishName, item.query) : "", matchedValue = match ? renderHighlightedMatch(match.value, item.query) : item.species.Scientific;
-          return `<button type="button" class="suggestion-item" data-scientific="${item.species.Scientific}"><span class="suggestion-main">${item.species.Scientific}</span><span class="suggestion-secondary"><span class="suggestion-field">English:</span> ${englishMatch || englishName || "—"}</span><span class="suggestion-secondary"><span class="suggestion-field">${match ? match.label : "Match"}:</span> ${matchedValue}</span></button>`;
+          return `<button type="button" class="suggestion-item" data-scientific="${item.species.Scientific}"><span class="suggestion-main">${item.species.Scientific}</span><span class="suggestion-sub">${englishMatch || matchedValue}</span></button>`;
         }).join("");
         suggestionDropdown.classList.remove("hidden");
         suggestionDropdown.querySelectorAll(".suggestion-item").forEach((button) => button.addEventListener("click", () => {
@@ -152,6 +153,10 @@
         const matches = speciesDatabase.map((species) => ({ species, score: scoreSpecies(species, query), query })).filter((item) => item.score > 0)
           .sort((a, b) => b.score - a.score || a.species.Scientific.localeCompare(b.species.Scientific)).slice(0, 8);
         showSuggestions(matches);
+      }
+      function getBirdsOfTheWorldUrl(scientificName) {
+        if (!scientificName) return "";
+        return birdsOfTheWorldLookup.get(String(scientificName).trim()) || "";
       }
       function renderSpecies(species) {
         if (!species) { searchResults.innerHTML = '<p class="language-box search-status">No matching species found.</p>'; return; }
@@ -167,7 +172,11 @@
           const valueHtml = field.italic ? `<i>${field.value}</i>` : field.value;
           return `<p class="language-box"><img src="${field.flag}" style="width: 20px;" />&nbsp;&nbsp;<strong>${field.label}</strong><br />${valueHtml}</p>`;
         }).join("");
-        searchResults.innerHTML = `<div class="species-result-panel"><p class="language-box species-link-box">Read more about this species at <strong><a href="https://birdsoftheworld.org/bow/species/grefla3" target="_blank">Birds of the World</a></strong></p><div class="species-result-grid">${info}</div></div><br />`;
+        const birdsOfTheWorldUrl = getBirdsOfTheWorldUrl(species.Scientific);
+        const readMoreHtml = birdsOfTheWorldUrl
+          ? `<p class="language-box species-link-box">Read more about this species at <strong><a href="${birdsOfTheWorldUrl}" target="_blank" rel="noopener noreferrer">Birds of the World</a></strong></p>`
+          : `<p class="language-box species-link-box">Read more about this species at <strong><a href="https://birdsoftheworld.org/" target="_blank" rel="noopener noreferrer">Birds of the World</a></strong></p>`;
+        searchResults.innerHTML = `<div class="species-result-panel">${readMoreHtml}<div class="species-result-grid">${info}</div></div><br />`;
       }
       function findMatches(query) {
         const normalizedQuery = query.trim();
@@ -195,6 +204,11 @@
       }
       fetch("species.json").then((response) => response.json()).then((data) => { speciesDatabase = data; updateSearchResults(); }).catch(() => {
         searchResults.innerHTML = '<p class="language-box search-status">Unable to load bird species data.</p>';
+      });
+      fetch("birds-of-the-world.json").then((response) => response.json()).then((data) => {
+        birdsOfTheWorldLookup = new Map((Array.isArray(data) ? data : []).map((entry) => [String(entry.Scientific).trim(), entry.url]));
+      }).catch(() => {
+        birdsOfTheWorldLookup = new Map();
       });
       searchButton.addEventListener("click", updateSearchResults);
       searchInput.addEventListener("input", () => { updateSuggestions(); updateClearButton(); });
