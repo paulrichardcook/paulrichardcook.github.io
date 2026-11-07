@@ -345,19 +345,22 @@ h2 {
        display: block;
     }
 
-    .aviala-home-table tr {
+    .aviala-home-table tr,
+    body > table tr {
        display: block;
        width: 100%;
     }
 
-    .aviala-home-table td {
+    .aviala-home-table td,
+    body > table td {
        display: block;
        width: 100%;
        padding: 0 0.75rem !important;
        box-sizing: border-box;
     }
 
-    .aviala-home-table img {
+    .aviala-home-table img,
+    body > table img {
        max-width: 100%;
        height: auto;
        display: inline-block;
@@ -365,20 +368,20 @@ h2 {
        padding: 0 !important;
     }
 
-    .aviala-home-table td:first-child img,
+    .aviala-logo-cell {
+       width: 100% !important;
+       max-width: 160px !important;
+       padding-right: 0 !important;
+       margin: 0 auto;
+    }
+
+    .aviala-logo-cell img,
     .aviala-home-logo {
        max-width: 160px !important;
        width: 100% !important;
        height: auto !important;
        min-height: 0 !important;
        padding-top: 0 !important;
-    }
-
-    .aviala-home-table td:first-child {
-       width: 100% !important;
-       max-width: 160px !important;
-       padding-right: 0 !important;
-       margin: 0 auto;
     }
 
     .rounded-thumbnail,
